@@ -49,7 +49,7 @@ const activityData = [
 export default function RecentActivityFeed() {
   return (
     <div className="card p-6 mb-8">
-      <h2 className="text-lg font-medium mb-4 text-gray-100">
+      <h2 className="text-lg font-medium mb-4 text-gray-800 dark:text-gray-100">
         Actividad Reciente
       </h2>
       <div className="h-72 overflow-y-auto pr-2 custom-scrollbar">

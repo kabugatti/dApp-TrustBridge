@@ -1,8 +1,26 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+/* Tailwind v4 dark mode configuration */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @tailwind utilities;
 
 :root {
+  /* Light theme (default) */
+  --primary-dark: #ffffff;
+  --secondary-dark: #f9fafb;
+  --tertiary-dark: #f3f4f6;
+  --primary-green: #37bc64;
+  --primary-green-hover: #2da558;
+  --primary-orange: #ff7b37;
+  --text-light: #111827;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+}
+
+/* Dark theme */
+.dark {
   --primary-dark: #0d1117;
   --secondary-dark: #1a1f25;
   --tertiary-dark: #272e36;
@@ -18,7 +36,14 @@ body {
   font-family: var(--font-inter), sans-serif;
   background-color: var(--primary-dark);
   color: var(--text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
 
 .bg-dark-secondary {
   background-color: var(--secondary-dark);

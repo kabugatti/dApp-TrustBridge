@@ -42,7 +42,7 @@ export default function ActivityItem({ type, description, amount, token, timesta
   }
 
   return (
-    <div className="flex items-start justify-between p-4 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+    <div className="flex items-start justify-between p-4 rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition-colors duration-200">
       <div className="flex items-start gap-3">
         <div
           className={cn(
@@ -55,7 +55,7 @@ export default function ActivityItem({ type, description, amount, token, timesta
           <Icon className="w-4 h-4" />
         </div>
         <div>
-          <div className="font-medium text-gray-100">{titleMap[type]}</div>
+          <div className="font-medium dark:text-gray-100">{titleMap[type]}</div>
           <div className="text-sm text-gray-400">{description}</div>
           {(amount || token) && (
             <div className="flex gap-2 mt-1">

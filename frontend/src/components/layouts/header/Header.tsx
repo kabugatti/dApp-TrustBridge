@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWallet } from "@/components/modules/auth/hooks/wallet.hook";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function Header() {
   const pathname = usePathname();
@@ -63,6 +64,9 @@ export default function Header() {
         <span className="network-badge hidden md:inline-flex">
           Stellar Testnet
         </span>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Desktop Wallet Section */}
         <div className="hidden sm:flex items-center gap-3">
