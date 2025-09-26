@@ -1,12 +1,13 @@
 // TrustBridge Contract Addresses - Stellar Testnet
 export const NETWORK_CONFIG = {
   networkPassphrase: "Test SDF Network ; September 2015",
-  horizonUrl: 'https://horizon-testnet.stellar.org',
-  sorobanRpcUrl: 'https://soroban-testnet.stellar.org:443',
+  horizonUrl: "https://horizon-testnet.stellar.org",
+  sorobanRpcUrl: "https://soroban-testnet.stellar.org:443",
 };
 
 // Official Blend Protocol Testnet Oracle (from blend-utils testnet.contracts.json)
-export const ORACLE_ID = 'CCYHURAC5VTN2ZU663UUS5F24S4GURDPO4FHZ75JLN5DMLRTLCG44H44'; // Official Blend testnet oraclemock
+export const ORACLE_ID =
+  "CCYHURAC5VTN2ZU663UUS5F24S4GURDPO4FHZ75JLN5DMLRTLCG44H44"; // Official Blend testnet oraclemock
 
 // Disable fallback oracle for now to avoid address format issues
 export const FALLBACK_ORACLE_ID = null;
@@ -16,7 +17,7 @@ export const TOKENS = {
   USDC: "CAQCFVLOBK5GIULPNZRGATJJMIZL5BSP7X5YJVMGCPTUEPFM4AVSRCJU", // Official Blend testnet USDC (verified)
   XLM: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC", // Official Blend testnet XLM (verified)
   BLND: "CB22KRA3YZVCNCQI64JQ5WE7UY2VAV7WFLK6A2JN3HEX56T2EDAFO7QF", // Official Blend testnet BLND (verified)
-  TBRG: "CAAUAE53WKWR4X2BRCHXNUTDJGXTOBMHMK3KFTAPEUBA7MJEQBPWVWQU", // TrustBridge Token (custom)
+  TBRG: "CB22KRA3YZVCNCQI64JQ5WE7UY2VAV7WFLK6A2JN3HEX56T2EDAFO7QF", // Using BLND token as TBRG for now
 } as const;
 
 // Pool Configuration for TrustBridge-MicroLoans
@@ -30,13 +31,16 @@ export const POOL_CONFIG = {
 } as const;
 
 // Pool Factory - Official Blend Protocol Factory on Stellar Testnet (from blend-utils)
-export const POOL_FACTORY_ID = 'CDIE73IJJKOWXWCPU5GWQ745FUKWCSH3YKZRF5IQW7GE3G7YAZ773MYK'; // Official poolFactoryV2
+export const POOL_FACTORY_ID =
+  "CDIE73IJJKOWXWCPU5GWQ745FUKWCSH3YKZRF5IQW7GE3G7YAZ773MYK"; // Official poolFactoryV2
 
 // Deployed Pool ID - Successfully deployed on Stellar Testnet
-export const TRUSTBRIDGE_POOL_ID = "CB7BGBKLC4UNO2Q6V7O52622I44PVMDFDAMAJ6NT64GB3UQZX3FU7LA5";
+export const TRUSTBRIDGE_POOL_ID =
+  "CB7BGBKLC4UNO2Q6V7O52622I44PVMDFDAMAJ6NT64GB3UQZX3FU7LA5";
 
-// Backstop Contract - Official Blend Protocol Backstop on Stellar Testnet  
-export const BACKSTOP_ID = "CC4TSDVQKBAYMK4BEDM65CSNB3ISI2A54OOBRO6IPSTFHJY3DEEKHRKV"; // Official backstopV2
+// Backstop Contract - Official Blend Protocol Backstop on Stellar Testnet
+export const BACKSTOP_ID =
+  "CC4TSDVQKBAYMK4BEDM65CSNB3ISI2A54OOBRO6IPSTFHJY3DEEKHRKV"; // Official backstopV2
 
 // Pool deployment configuration
 export const POOL_DEPLOYMENT_CONFIG = {
@@ -133,18 +137,18 @@ export const DEFAULT_POOL_CONFIG = {
 // Testing Configuration
 export const TESTING_CONFIG = {
   skipOracleValidation: true, // Set to true to bypass oracle checks during testing
-  useSimulatedValues: true,   // Use mock values for testing
+  useSimulatedValues: true, // Use mock values for testing
   mockOracleResponse: {
     price: 100000000, // $1.00 in 7 decimals
-    timestamp: Date.now()
-  }
+    timestamp: Date.now(),
+  },
 };
 
 // Assets Configuration - Using Official Blend Testnet Addresses
 export const SUPPORTED_ASSETS = {
-  USDC: 'CAQCFVLOBK5GIULPNZRGATJJMIZL5BSP7X5YJVMGCPTUEPFM4AVSRCJU', // Official Blend testnet USDC
-  XLM: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC', // Official Blend testnet XLM
-  BLND: 'CB22KRA3YZVCNCQI64JQ5WE7UY2VAV7WFLK6A2JN3HEX56T2EDAFO7QF', // Official Blend testnet BLND
+  USDC: "CAQCFVLOBK5GIULPNZRGATJJMIZL5BSP7X5YJVMGCPTUEPFM4AVSRCJU", // Official Blend testnet USDC
+  XLM: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC", // Official Blend testnet XLM
+  BLND: "CB22KRA3YZVCNCQI64JQ5WE7UY2VAV7WFLK6A2JN3HEX56T2EDAFO7QF", // Official Blend testnet BLND
 };
 
 // Export all contract IDs for easy access
@@ -161,5 +165,5 @@ export default {
   CONTRACT_IDS,
   DEFAULT_POOL_CONFIG,
   TESTING_CONFIG,
-  SUPPORTED_ASSETS
-}; 
+  SUPPORTED_ASSETS,
+};

@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { useWalletBalance } from "@/components/modules/marketplace/hooks/useWalletBalance.hook";
 import {
   TOKENS,
   TRUSTBRIDGE_POOL_ID,
@@ -55,10 +56,14 @@ export function ProvideLiquidityModal({
   onClose,
   poolData,
 }: ProvideLiquidityModalProps) {
+  const {
+    balancesFormatted,
+    loading: loadingBalances,
+    refresh,
+  } = useWalletBalance();
   const { walletAddress } = useWalletContext();
   const [depositAmount, setDepositAmount] = useState("");
   const [selectedAsset, setSelectedAsset] = useState("USDC");
-  const [walletBalance, setWalletBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [estimating, setEstimating] = useState(false);
   const [estimates, setEstimates] = useState<DepositEstimate>({
@@ -79,20 +84,6 @@ export function ProvideLiquidityModal({
   const currentAsset = availableAssets.find(
     (asset) => asset.symbol === selectedAsset,
   );
-
-  // Mock wallet balance
-  useEffect(() => {
-    if (walletAddress && selectedAsset) {
-      const mockBalances = {
-        USDC: 5000.0,
-        XLM: 15000.0,
-        TBRG: 2500.0,
-      };
-      setWalletBalance(
-        mockBalances[selectedAsset as keyof typeof mockBalances] || 0,
-      );
-    }
-  }, [walletAddress, selectedAsset]);
 
   // Update estimates when deposit amount changes
   useEffect(() => {
@@ -123,12 +114,14 @@ export function ProvideLiquidityModal({
   };
 
   const handleMaxClick = () => {
-    const maxAmount = Math.max(0, walletBalance - 1);
+    const currentBalance = Number(balancesFormatted[selectedAsset] ?? "0");
+    const maxAmount = Math.max(0, currentBalance - 1);
     setDepositAmount(maxAmount.toString());
   };
 
   const handlePresetClick = (percentage: number) => {
-    const amount = (walletBalance * percentage) / 100;
+    const currentBalance = Number(balancesFormatted[selectedAsset] ?? "0");
+    const amount = (currentBalance * percentage) / 100;
     setDepositAmount(amount.toFixed(2));
   };
 
@@ -186,7 +179,8 @@ export function ProvideLiquidityModal({
       }
 
       // Check balance
-      const hasBalance = walletBalance >= Number(depositAmount);
+      const currentBalance = Number(balancesFormatted[selectedAsset] ?? "0");
+      const hasBalance = currentBalance >= Number(depositAmount);
       if (!hasBalance) {
         toast.error(`Insufficient ${selectedAsset} balance`);
         return false;
@@ -270,6 +264,7 @@ export function ProvideLiquidityModal({
         signedTransaction: signedTx,
       });
 
+      refresh(); // re-fetch balances
       onClose();
     } catch (error) {
       console.error("Deposit transaction failed:", error);
@@ -323,7 +318,7 @@ export function ProvideLiquidityModal({
   const isValidAmount =
     depositAmount &&
     Number(depositAmount) > 0 &&
-    Number(depositAmount) <= walletBalance;
+    Number(depositAmount) <= Number(balancesFormatted[selectedAsset] ?? "0");
   const hasEstimates = isValidAmount && estimates.bTokensEstimated > 0;
 
   if (!isOpen) return null;
@@ -375,13 +370,18 @@ export function ProvideLiquidityModal({
               </div>
               <div className="text-right">
                 <div className="text-white font-medium">
-                  {walletBalance.toLocaleString()} {selectedAsset}
+                  {loadingBalances
+                    ? "Loading..."
+                    : `${balancesFormatted[selectedAsset] ?? "0"} ${selectedAsset}`}
                 </div>
                 <div className="text-xs text-gray-400">
                   ~$
-                  {(
-                    walletBalance * (selectedAsset === "USDC" ? 1 : 0.1)
-                  ).toLocaleString()}
+                  {loadingBalances
+                    ? "..."
+                    : (
+                        Number(balancesFormatted[selectedAsset] ?? "0") *
+                        (selectedAsset === "USDC" ? 1 : 0.1)
+                      ).toLocaleString()}
                 </div>
               </div>
             </div>
@@ -474,17 +474,20 @@ export function ProvideLiquidityModal({
           </div>
 
           {/* Error States */}
-          {depositAmount && Number(depositAmount) > walletBalance && (
-            <div className="p-3 rounded bg-red-900 bg-opacity-20 border border-red-700 text-red-300">
-              <div className="flex items-start gap-2">
-                <i className="fas fa-exclamation-triangle mt-0.5 text-red-400"></i>
-                <div className="text-sm">
-                  Insufficient balance. You have{" "}
-                  {walletBalance.toLocaleString()} {selectedAsset} available.
+          {depositAmount &&
+            Number(depositAmount) >
+              Number(balancesFormatted[selectedAsset] ?? "0") && (
+              <div className="p-3 rounded bg-red-900 bg-opacity-20 border border-red-700 text-red-300">
+                <div className="flex items-start gap-2">
+                  <i className="fas fa-exclamation-triangle mt-0.5 text-red-400"></i>
+                  <div className="text-sm">
+                    Insufficient balance. You have{" "}
+                    {balancesFormatted[selectedAsset] ?? "0"} {selectedAsset}{" "}
+                    available.
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3">

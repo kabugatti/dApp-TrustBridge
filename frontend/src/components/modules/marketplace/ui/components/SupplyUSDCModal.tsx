@@ -1,6 +1,7 @@
 "use client";
 
 import { useSupply } from "../../hooks/useSupply.hook";
+import { useWalletBalance } from "@/components/modules/marketplace/hooks/useWalletBalance.hook";
 
 interface SupplyUSDCModalProps {
   isOpen: boolean;
@@ -14,6 +15,12 @@ export function SupplyUSDCModal({
   onSuccess,
 }: SupplyUSDCModalProps) {
   const {
+    balancesFormatted,
+    loading: loadingBalances,
+    refresh,
+  } = useWalletBalance();
+
+  const {
     supplyAmount,
     loading,
     estimates,
@@ -23,14 +30,18 @@ export function SupplyUSDCModal({
   } = useSupply({
     isOpen,
     onClose,
-    onSuccess,
+    onSuccess: () => {
+      // existing behavior
+      onSuccess?.();
+      refresh(); // re-fetch balances after confirmed tx
+    },
   });
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-neutral-900 border border-neutral-700 text-neutral-200 p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto rounded-lg">
+      <div className="card bg-dark-secondary p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -60,8 +71,10 @@ export function SupplyUSDCModal({
             <label htmlFor="supply-amount" className="text-sm text-neutral-300">
               Amount to Supply
             </label>
-            <span className="text-xs text-neutral-400 bg-neutral-700 px-2 py-1 rounded">
-              USDC
+            <span className="text-xs text-gray-500">
+              {loadingBalances
+                ? "Loading..."
+                : `Wallet Balance: ${balancesFormatted.USDC ?? "0"} USDC`}
             </span>
           </div>
           <div className="relative">

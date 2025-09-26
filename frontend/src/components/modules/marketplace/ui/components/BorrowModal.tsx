@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useBorrow } from "../../hooks/useBorrow.hook";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
@@ -35,9 +36,36 @@ export function BorrowModal({ isOpen, onClose, poolId, poolData }: BorrowModalPr
     handleBorrow,
     isHealthy,
     isAtRisk,
-    isDangerous,
     isBorrowDisabled,
   } = useBorrow({ isOpen, onClose, poolId });
+
+  // Monitor health factor in real-time
+  useEffect(() => {
+    if (!isOpen || !walletAddress) return;
+
+    const stopMonitoring = monitorHealthFactor(walletAddress, (result) => {
+      setHealthFactor(result);
+      setAlerts(getHealthFactorAlerts(result));
+      
+      // Calculate max borrowable amount
+      const maxBorrow = calculateMaxBorrowable(
+        result.collateralValue,
+        85, // USDC collateral factor
+        result.borrowedValue
+      );
+      setMaxBorrowable(maxBorrow);
+      
+      // Calculate liquidation price
+      const liqPrice = calculateLiquidationPrice(
+        result.borrowedValue,
+        result.collateralValue,
+        85 // USDC collateral factor
+      );
+      setLiquidationPrice(liqPrice);
+    });
+
+    return stopMonitoring;
+  }, [isOpen, walletAddress]);
 
   if (!isOpen) return null;
 
@@ -165,6 +193,31 @@ export function BorrowModal({ isOpen, onClose, poolId, poolData }: BorrowModalPr
                   {estimates.liquidationThreshold}%
                 </div>
               </div>
+
+              {/* Current Position Summary */}
+              {healthFactor && (
+                <div className="card p-3 mb-3">
+                  <div className="text-xs text-gray-400 mb-2">Current Position</div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-gray-400">Collateral:</span>
+                      <span className="text-white ml-1">${healthFactor.collateralValue.toLocaleString()}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Borrowed:</span>
+                      <span className="text-white ml-1">${healthFactor.borrowedValue.toLocaleString()}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Ratio:</span>
+                      <span className="text-white ml-1">{healthFactor.collateralRatio.toFixed(1)}%</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Max Borrow:</span>
+                      <span className="text-success ml-1">${maxBorrowable.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Required Collateral */}

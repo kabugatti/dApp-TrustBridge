@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Settings,
   ShoppingCart,
+  TrendingUp,
 } from "lucide-react";
 import { ReactNode } from "react";
 import { useWalletContext } from "@/providers/wallet.provider";
@@ -58,6 +59,12 @@ export function useTrustBridgeSidebar() {
           icon: <ShoppingCart className="h-4 w-4" />,
           label: "Marketplace",
           active: pathname.startsWith("/dashboard/marketplace"),
+        },
+        {
+          href: "/dashboard/lender",
+          icon: <TrendingUp className="h-4 w-4" />,
+          label: "Investment Dashboard",
+          active: pathname.startsWith("/dashboard/lender"),
         },
       ],
     },
