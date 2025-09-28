@@ -12,8 +12,11 @@ import {
   getPoolTypeForAsset,
 } from "@/helpers/user-positions.helper";
 import { DollarSignIcon, File, HandCoins, PiggyBank } from "lucide-react";
+import { NoPositionsEmptyState } from "@/components/ui/empty-state";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
   const {
     address,
     walletName,
@@ -273,16 +276,15 @@ export default function Dashboard() {
             <tbody>
               {userPositions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-gray-500">
-                    <div className="flex flex-col items-center">
-                      <i className="fas fa-wallet text-3xl mb-3 text-gray-300"></i>
-                      <p className="text-lg font-medium mb-2">
-                        No positions yet
-                      </p>
-                      <p className="text-sm">
-                        Start by supplying assets or taking out loans
-                      </p>
-                    </div>
+                  <td colSpan={6} className="p-0">
+                    <NoPositionsEmptyState
+                      onSupplyAssets={() => {
+                        router.push('/dashboard/marketplace');
+                      }}
+                      onBrowsePools={() => {
+                        router.push('/dashboard/marketplace');
+                      }}
+                    />
                   </td>
                 </tr>
               ) : (
@@ -304,7 +306,7 @@ export default function Dashboard() {
                               );
                             }}
                           />
-                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center hidden">
+                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full items-center justify-center hidden">
                             <i className="fas fa-coins text-gray-500 text-sm"></i>
                           </div>
                         </div>
