@@ -14,8 +14,8 @@ export function PoolsIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
-    >
-      <defs>
+      aria-hidden="true"
+    >      <defs>
         <linearGradient id="poolGradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="currentColor" stopOpacity="0.1" />
           <stop offset="100%" stopColor="currentColor" stopOpacity="0.3" />

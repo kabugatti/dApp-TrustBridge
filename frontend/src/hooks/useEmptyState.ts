@@ -102,9 +102,7 @@ export function useEmptyState(config: EmptyStateConfig) {
       default:
         return {};
     }
-  }, [config, router]);
-
-  // Get contextual messages based on context and metadata
+  }, [config, connectWallet, router]);  // Get contextual messages based on context and metadata
   const getContextualMessage = useCallback(() => {
     const { context, metadata } = config;
 

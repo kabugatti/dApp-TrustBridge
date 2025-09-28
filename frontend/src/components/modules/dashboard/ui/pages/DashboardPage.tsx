@@ -306,7 +306,7 @@ export default function Dashboard() {
                               );
                             }}
                           />
-                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full items-center justify-center hidden">
+                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center hidden">
                             <i className="fas fa-coins text-gray-500 text-sm"></i>
                           </div>
                         </div>

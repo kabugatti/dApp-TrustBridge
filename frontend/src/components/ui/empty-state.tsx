@@ -41,7 +41,10 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center",
+        "flex flex-col",
+        centered
+          ? "items-center justify-center text-center"
+          : "items-start justify-start text-left",
         sizeClasses[size],
         centered && "min-h-[300px]",
         className
@@ -83,7 +86,7 @@ export function EmptyState({
           {secondaryAction && (
             <Button
               onClick={secondaryAction.onClick}
-              variant="outline"
+              variant={secondaryAction.variant === 'primary' ? 'default' : 'outline'}
               size={size === 'sm' ? 'default' : 'lg'}
               className="cursor-pointer"
             >
