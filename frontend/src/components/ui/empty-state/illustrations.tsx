@@ -126,6 +126,7 @@ export function WalletIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
+      aria-hidden="true" 
     >
       {/* Wallet body */}
       <rect 
@@ -228,6 +229,7 @@ export function PositionsIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
+      aria-hidden="true"
     >
       <defs>
         <linearGradient id="chartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -349,6 +351,7 @@ export function ActivityIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
+      aria-hidden="true"
     >
       {/* Activity timeline */}
       <line 
@@ -472,6 +475,7 @@ export function SearchIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
+      aria-hidden="true"
     >
       {/* Search magnifying glass */}
       <circle 
@@ -565,6 +569,7 @@ export function ErrorIllustration({ className }: IllustrationProps) {
       viewBox="0 0 200 160" 
       className={cn("text-muted-foreground w-full", className)}
       fill="none"
+      aria-hidden="true"
     >
       {/* Warning triangle */}
       <path 
