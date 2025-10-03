@@ -5,8 +5,7 @@ import { BorrowModal } from "../components/BorrowModal";
 import { ProvideLiquidityModal } from "../components/ProvideLiquidityModal";
 import { SupplyUSDCModal } from "../components/SupplyUSDCModal";
 import { SupplyXLMCollateralModal } from "../components/SupplyXLMCollateralModal";
-import { ResponsiveTable } from "@/components/ui/responsive-table";
-
+import { useTranslation } from "@/hooks/useTranslation";
 // Pool Data Interface
 interface PoolReserve {
   symbol: string;
@@ -49,6 +48,7 @@ export default function Marketplace() {
     canDeployPool,
     canInteractWithPool,
   } = useMarketplace();
+  const { t } = useTranslation();
 
   // Define table columns for the responsive table
   const tableColumns = [
@@ -201,9 +201,9 @@ export default function Marketplace() {
 
   return (
     <main className="container mx-auto px-4 md:px-6 pt-24 pb-16 max-w-6xl">
-      <h1 className="text-2xl md:text-3xl font-bold mb-2">Marketplace</h1>
+      <h1 className="text-3xl font-bold mb-2">{t('marketplace.title')}</h1>
       <p className="text-gray-400 mb-6">
-        Decentralized lending pools powered by Blend Protocol
+        {t('marketplace.description')}
       </p>
 
       {/* Wallet Connection Alert */}
@@ -211,10 +211,9 @@ export default function Marketplace() {
         <div className="bg-amber-900 bg-opacity-20 border border-amber-700 text-amber-400 px-4 py-3 rounded mb-8 flex items-start">
           <i className="fas fa-exclamation-circle mt-1 mr-3"></i>
           <div>
-            <p className="font-medium">Connect Your Wallet</p>
+            <p className="font-medium">{t('marketplace.connectWalletAlert.title')}</p>
             <p className="text-sm">
-              Please connect your Stellar wallet to interact with the lending
-              pools.
+              {t('marketplace.connectWalletAlert.message')}
             </p>
           </div>
         </div>
@@ -225,11 +224,9 @@ export default function Marketplace() {
         <div className="bg-green-900 bg-opacity-20 border border-green-700 text-green-400 px-4 py-3 rounded mb-8 flex items-start">
           <i className="fas fa-check-circle mt-1 mr-3"></i>
           <div>
-            <p className="font-medium">Pool Ready for Lending</p>
+            <p className="font-medium">{t('marketplace.poolReadyAlert.title')}</p>
             <p className="text-sm">
-              Pool deployed successfully! You can now supply USDC to provide
-              liquidity and users can borrow from the pool. The pool is
-              configured with USDC reserves and ready for operation.
+              {t('marketplace.poolReadyAlert.message')}
             </p>
           </div>
         </div>
@@ -239,7 +236,7 @@ export default function Marketplace() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {/* Total Supplied Card */}
         <div className="card stat-card p-5">
-          <h3 className="text-gray-400 text-sm mb-2">Total Supplied</h3>
+          <h3 className="text-gray-400 text-sm mb-2">{t('marketplace.totalSupplied')}</h3>
           <div className="flex items-end justify-between">
             <div className="flex items-baseline">
               <span className="text-xl md:text-2xl font-bold mr-2">
@@ -256,7 +253,7 @@ export default function Marketplace() {
         
         {/* Total Borrowed Card */}
         <div className="card stat-card p-5">
-          <h3 className="text-gray-400 text-sm mb-2">Total Borrowed</h3>
+          <h3 className="text-gray-400 text-sm mb-2">{t('marketplace.totalBorrowed')}</h3>
           <div className="flex items-end justify-between">
             <div className="flex items-baseline">
               <span className="text-xl md:text-2xl font-bold mr-2">
@@ -273,20 +270,20 @@ export default function Marketplace() {
         
         {/* Utilization Rate Card */}
         <div className="card stat-card p-5">
-          <h3 className="text-gray-400 text-sm mb-2">Utilization Rate</h3>
+          <h3 className="text-gray-400 text-sm mb-2">{t('marketplace.utilizationRate')}</h3>
           <div className="flex items-end justify-between">
             <div className="flex items-baseline">
               <span className="text-xl md:text-2xl font-bold mr-2">
                 {mockPoolData?.utilizationRate || "69.6"}%
               </span>
               <span className="text-success bg-green-900 bg-opacity-20 px-2 py-0.5 rounded-full text-xs">
-                Optimal
+                {t('marketplace.optimal')}
               </span>
             </div>
             <i className="fas fa-chart-pie text-xl md:text-2xl text-gray-500"></i>
           </div>
           <div className="mt-2 text-xs text-gray-400">
-            Optimal range: 50-80%
+            {t('marketplace.optimalRange')}
           </div>
         </div>
       </div>
@@ -296,10 +293,10 @@ export default function Marketplace() {
         <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between cursor-pointer bg-dark-tertiary">
           <div className="mb-2 sm:mb-0">
             <h2 className="text-lg font-medium">
-              {POOL_CONFIG?.name || "TrustBridge-MicroLoans"} Pool
+              {POOL_CONFIG?.name || "TrustBridge-MicroLoans"} {t('marketplace.pool')}
             </h2>
             <div className="text-xs text-gray-400 mt-1">
-              Oracle:{" "}
+              {t('marketplace.oracle')}:{" "}
               {ORACLE_ID
                 ? `${ORACLE_ID.substring(0, 8)}...${ORACLE_ID.substring(-4)}`
                 : "0x7a9f92e53bDFAC9007A40D103852377E984BDDc9"}
@@ -309,10 +306,10 @@ export default function Marketplace() {
             {POOL_CONFIG && (
               <>
                 <span className="text-xs bg-neutral-800 text-neutral-300 px-2 py-1 rounded border border-neutral-600">
-                  {POOL_CONFIG.maxPositions} Max Positions
+                  {POOL_CONFIG.maxPositions} {t('marketplace.maxPositions')}
                 </span>
                 <span className="text-xs bg-neutral-800 text-neutral-300 px-2 py-1 rounded border border-neutral-600">
-                  {POOL_CONFIG.backstopRate}% Backstop Rate
+                  {POOL_CONFIG.backstopRate}% {t('marketplace.backstopRate')}
                 </span>
               </>
             )}
@@ -322,20 +319,223 @@ export default function Marketplace() {
         {/* Pool Content */}
         <div className="p-4 sm:p-6">
           {/* Pool Tabs */}
-          <div className="tab-buttons flex mb-4 overflow-x-auto">
-            <div className="tab-btn active whitespace-nowrap">Supply & Borrow</div>
-            <div className="tab-btn whitespace-nowrap">Analytics</div>
-            <div className="tab-btn whitespace-nowrap">History</div>
+          <div className="tab-buttons flex mb-4">
+            <div className="tab-btn active">{t('marketplace.supplyAndBorrow')}</div>
+            <div className="tab-btn">{t('marketplace.analytics')}</div>
+            <div className="tab-btn">{t('marketplace.history')}</div>
           </div>
 
           {/* Asset Table */}
-          <div className="mb-6">
-            <ResponsiveTable
-              columns={tableColumns}
-              data={tableData}
-              keyField="symbol"
-              className="w-full"
-            />
+          <div className="overflow-x-auto">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>{t('marketplace.asset')}</th>
+                  <th>{t('marketplace.supplied')}</th>
+                  <th>{t('marketplace.borrowed')}</th>
+                  <th>{t('marketplace.supplyAPY')}</th>
+                  <th>{t('marketplace.borrowAPY')}</th>
+                  <th>{t('marketplace.role')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockPoolData?.reserves ? (
+                  mockPoolData.reserves.map(
+                    (reserve: PoolReserve, index: number) => (
+                      <tr key={reserve.symbol}>
+                        <td>
+                          <div className="flex items-center">
+                            <div
+                              className={`w-8 h-8 rounded-full overflow-hidden ${
+                                reserve.symbol === "USDC"
+                                  ? "bg-blue-700"
+                                  : reserve.symbol === "XLM"
+                                    ? "bg-gray-100"
+                                    : "bg-gray-800"
+                              } flex items-center justify-center mr-3`}
+                            >
+                              {reserve.symbol === "USDC" ? (
+                                <img
+                                  src="/img/tokens/usdc.png"
+                                  alt="USDC"
+                                  className="w-10 h-10object-contain"
+                                />
+                              ) : reserve.symbol === "XLM" ? (
+                                <img
+                                  src="/img/tokens/xlm.png"
+                                  alt="XLM"
+                                  className="bg-white w-5 h-5 object-contain"
+                                />
+                              ) : (
+                                <img
+                                  src="/img/tokens/tbt.png"
+                                  alt="TrustBridge Token"
+                                  className="w-10 h-10 object-contain"
+                                />
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-medium">
+                                {reserve.symbol}
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                {reserve.symbol === "USDC"
+                                  ? t('marketplace.usdCoin')
+                                  : reserve.symbol === "XLM"
+                                    ? t('marketplace.stellarLumens')
+                                    : t('marketplace.trustBridgeToken')}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="font-medium">{reserve.supplied}</div>
+                          <div className="text-xs text-gray-400">
+                            ${reserve.supplied}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="font-medium">{reserve.borrowed}</div>
+                          <div className="text-xs text-gray-400">
+                            ${reserve.borrowed}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="text-success font-medium">
+                            {reserve.supplyAPY}%
+                          </div>
+                        </td>
+                        <td>
+                          <div className="text-warning font-medium">
+                            {reserve.borrowAPY}%
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            className={`${
+                              index === 0
+                                ? "bg-blue-900 bg-opacity-20 text-blue-400"
+                                : index === 1
+                                  ? "bg-purple-900 bg-opacity-20 text-purple-400"
+                                  : "bg-green-900 bg-opacity-20 text-green-400"
+                            } text-xs inline-block px-2 py-1 rounded`}
+                          >
+                            {t('marketplace.reserve', { number: index + 1 })}
+                          </div>
+                        </td>
+                      </tr>
+                    ),
+                  )
+                ) : (
+                  // Default rows when no data
+                  <>
+                    <tr>
+                      <td>
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center mr-3">
+                            <span className="font-bold text-xs">$</span>
+                          </div>
+                          <div>
+                            <div className="font-medium">USDC</div>
+                            <div className="text-xs text-gray-400">
+                              {t('marketplace.usdCoin')}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="font-medium">875,000</div>
+                        <div className="text-xs text-gray-400">$875,000</div>
+                      </td>
+                      <td>
+                        <div className="font-medium">654,200</div>
+                        <div className="text-xs text-gray-400">$654,200</div>
+                      </td>
+                      <td>
+                        <div className="text-success font-medium">3.2%</div>
+                      </td>
+                      <td>
+                        <div className="text-warning font-medium">6.8%</div>
+                      </td>
+                      <td>
+                        <div className="bg-blue-900 bg-opacity-20 text-blue-400 text-xs inline-block px-2 py-1 rounded">
+                          {t('marketplace.reserve', { number: 1 })}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mr-3">
+                            <i className="fas fa-rocket text-xs"></i>
+                          </div>
+                          <div>
+                            <div className="font-medium">XLM</div>
+                            <div className="text-xs text-gray-400">
+                              {t('marketplace.stellarLumens')}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="font-medium">350,000</div>
+                        <div className="text-xs text-gray-400">$210,000</div>
+                      </td>
+                      <td>
+                        <div className="font-medium">168,500</div>
+                        <div className="text-xs text-gray-400">$101,100</div>
+                      </td>
+                      <td>
+                        <div className="text-success font-medium">2.8%</div>
+                      </td>
+                      <td>
+                        <div className="text-warning font-medium">5.9%</div>
+                      </td>
+                      <td>
+                        <div className="bg-purple-900 bg-opacity-20 text-purple-400 text-xs inline-block px-2 py-1 rounded">
+                          {t('marketplace.reserve', { number: 2 })}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-green-800 flex items-center justify-center mr-3">
+                            <i className="fas fa-bridge text-xs"></i>
+                          </div>
+                          <div>
+                            <div className="font-medium">TBRG</div>
+                            <div className="text-xs text-gray-400">
+                              {t('marketplace.trustBridgeToken')}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="font-medium">1,250,000</div>
+                        <div className="text-xs text-gray-400">$162,500</div>
+                      </td>
+                      <td>
+                        <div className="font-medium">862,550</div>
+                        <div className="text-xs text-gray-400">$112,132</div>
+                      </td>
+                      <td>
+                        <div className="text-success font-medium">4.5%</div>
+                      </td>
+                      <td>
+                        <div className="text-warning font-medium">7.2%</div>
+                      </td>
+                      <td>
+                        <div className="bg-green-900 bg-opacity-20 text-green-400 text-xs inline-block px-2 py-1 rounded">
+                          {t('marketplace.reserve', { number: 3 })}
+                        </div>
+                      </td>
+                    </tr>
+                  </>
+                )}
+              </tbody>
+            </table>
           </div>
 
           {/* Actions Section */}
@@ -343,8 +543,8 @@ export default function Marketplace() {
             {/* Quick Supply Section */}
             {isPoolDeployed && (
               <div className="mb-4">
-                <label htmlFor="amount-input" className="form-label block mb-2">
-                  Amount
+                <label htmlFor="amount-input" className="form-label">
+                  {t('common.amount')}
                 </label>
                 <div className="relative">
                   <input
@@ -375,12 +575,12 @@ export default function Marketplace() {
                   {deploying ? (
                     <>
                       <div className="loader mr-2"></div>
-                      Deploying...
+                      {t('marketplace.deploying')}
                     </>
                   ) : (
                     <>
                       <i className="fas fa-rocket mr-2"></i>
-                      Deploy Pool
+                      {t('marketplace.deployPool')}
                     </>
                   )}
                 </button>
@@ -404,43 +604,65 @@ export default function Marketplace() {
                     )}
                   </button>
 
-                  <button
-                    className="btn-primary w-full flex items-center justify-center"
-                    onClick={openSupplyUSDCModal}
-                    disabled={!isWalletConnected}
-                  >
-                    <i className="fas fa-arrow-up mr-2"></i>
-                    Supply USDC
-                  </button>
-
-                  <button
-                    className="btn-secondary w-full flex items-center justify-center"
-                    onClick={openSupplyXLMModal}
-                    disabled={!isWalletConnected}
-                  >
-                    <i className="fas fa-shield mr-2"></i>
-                    Supply XLM
-                  </button>
-
-                  <button
-                    className="btn-secondary w-full flex items-center justify-center"
-                    onClick={openProvideLiquidityModal}
-                    disabled={!canInteractWithPool}
-                  >
-                    <i className="fas fa-droplet mr-2"></i>
-                    Add Liquidity
-                  </button>
-
-                  <button
-                    className="btn-danger w-full flex items-center justify-center"
-                    onClick={openBorrowModal}
-                    disabled={!canInteractWithPool}
-                  >
-                    <i className="fas fa-arrow-down mr-2"></i>
-                    Borrow USDC
-                  </button>
-                </>
+              {isPoolDeployed && (
+                <button
+                  className="btn-primary"
+                  onClick={handleSupplyToPool}
+                  disabled={!canSupplyToPool}
+                >
+                  {supplying ? (
+                    <>
+                      <div className="loader mr-2"></div>
+                      {t('marketplace.supplying')}
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-bolt mr-2"></i>
+                      {t('marketplace.quickSupply')}
+                    </>
+                  )}
+                </button>
               )}
+
+              {isPoolDeployed && (
+                <button
+                  className="btn-primary"
+                  onClick={openSupplyUSDCModal}
+                  disabled={!isWalletConnected}
+                >
+                  <i className="fas fa-arrow-up mr-2"></i>
+                  {t('marketplace.supplyUSDC')}
+                </button>
+              )}
+
+              {isPoolDeployed && (
+                <button
+                  className="btn-secondary"
+                  onClick={openSupplyXLMModal}
+                  disabled={!isWalletConnected}
+                >
+                  <i className="fas fa-shield mr-2"></i>
+                  {t('marketplace.supplyXLMCollateral')}
+                </button>
+              )}
+
+              <button
+                className="btn-secondary"
+                onClick={openProvideLiquidityModal}
+                disabled={!canInteractWithPool}
+              >
+                <i className="fas fa-droplet mr-2"></i>
+                {t('marketplace.provideLiquidity')}
+              </button>
+
+              <button
+                className="btn-danger"
+                onClick={openBorrowModal}
+                disabled={!canInteractWithPool}
+              >
+                <i className="fas fa-arrow-down mr-2"></i>
+                {t('marketplace.borrowUSDC')}
+              </button>
             </div>
           </div>
         </div>
