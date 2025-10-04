@@ -5,11 +5,13 @@ import { toast } from "sonner";
 import { useUserContext } from "@/providers/user.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { profileSchema } from "../schemas/profile.schema";
+import { ProfileSkeleton } from "@/components/ui/skeleton/ProfileSkeleton";
 import { EnhancedForm } from "@/components/ui/form/EnhancedForm";
 import { FormField } from "@/components/ui/form/FormField";
 import { AddressField } from "@/components/ui/form-field";
 import { SelectField } from "@/components/ui/form-field";
 import { validationRules } from "@/lib/validation";
+
 
 export default function Profile() {
   const { profile, loading, saving, saveProfile } = useUserContext();
@@ -37,13 +39,7 @@ export default function Profile() {
   ];
 
   if (loading) {
-    return (
-      <main className="container mx-auto px-4 md:px-6 pt-24 pb-16 max-w-3xl">
-        <div className="flex items-center justify-center h-64">
-          <div className="loader"></div>
-        </div>
-      </main>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (
@@ -92,6 +88,26 @@ export default function Profile() {
             />
           </div>
 
+        <div className="flex justify-center mt-8">
+          <button
+            type="submit"
+            className="btn-primary px-8 py-3 text-base"
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Saving...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-save mr-2"></i>
+                Save Changes
+              </>
+            )}
+          </button>
+        </div>
+      </form>
           <SelectField
             name="country"
             label="Country"
