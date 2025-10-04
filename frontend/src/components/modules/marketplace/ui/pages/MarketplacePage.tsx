@@ -5,6 +5,8 @@ import { BorrowModal } from "../components/BorrowModal";
 import { ProvideLiquidityModal } from "../components/ProvideLiquidityModal";
 import { SupplyUSDCModal } from "../components/SupplyUSDCModal";
 import { SupplyXLMCollateralModal } from "../components/SupplyXLMCollateralModal";
+import { WalletNotConnectedEmptyState, NoPoolsEmptyState } from "@/components/ui/empty-state";
+import { useWallet } from "@/components/modules/auth/hooks/wallet.hook";
 import { useTranslation } from "@/hooks/useTranslation";
 // Pool Data Interface
 interface PoolReserve {
@@ -16,6 +18,7 @@ interface PoolReserve {
 }
 
 export default function Marketplace() {
+  const { connectWallet } = useWallet();
   const {
     loading,
     deploying,
@@ -77,15 +80,10 @@ export default function Marketplace() {
 
       {/* Wallet Connection Alert */}
       {!isWalletConnected && (
-        <div className="bg-amber-900 bg-opacity-20 border border-amber-700 text-amber-400 px-4 py-3 rounded mb-8 flex items-start">
-          <i className="fas fa-exclamation-circle mt-1 mr-3"></i>
-          <div>
-            <p className="font-medium">{t('marketplace.connectWalletAlert.title')}</p>
-            <p className="text-sm">
-              {t('marketplace.connectWalletAlert.message')}
-            </p>
-          </div>
-        </div>
+        <WalletNotConnectedEmptyState
+          onConnect={connectWallet}
+          className="mb-8"
+        />
       )}
 
       {/* Pool Status Alert */}
@@ -155,8 +153,14 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Pool Card */}
-      <div className="card pool-card overflow-hidden mb-8">
+      {/* Pool Card or Empty State */}
+      {isWalletConnected && !isPoolDeployed ? (
+        <NoPoolsEmptyState
+          onCreatePool={handleDeployPool}
+          className="mb-8"
+        />
+      ) : (
+        <div className="card pool-card overflow-hidden mb-8">
         <div className="p-4 flex items-center justify-between cursor-pointer bg-dark-tertiary">
           <div>
             <h2 className="text-lg font-medium">
@@ -516,6 +520,7 @@ export default function Marketplace() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Modals */}
       <BorrowModal

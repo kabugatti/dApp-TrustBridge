@@ -3,9 +3,26 @@
 import Image from "next/image";
 import StatCard from "../cards/StatCard";
 import { useTranslation } from "@/hooks/useTranslation";
+import { NoPositionsEmptyState } from "@/components/ui/empty-state";
+import { useRouter } from "next/navigation";
+import { formatCurrency, UserPosition, POOL_CONFIG, getPoolTypeForAsset } from "@/helpers/user-positions.helper";
+import { useDashboard } from "../../hooks/useDashboard.hook";
+import { TrendingUp, TrendingDown, Wallet, FileText } from "lucide-react";
 
 export default function Dashboard() {
+  const router = useRouter();
   const { t } = useTranslation();
+  const { 
+    userPositions, 
+    address, 
+    profile, 
+    walletName, 
+    totalSupplied, 
+    totalBorrowed, 
+    availableBalance, 
+    activeLoans,
+    cardsLoading 
+  } = useDashboard();
   
   const handleManagePosition = () => {
     alert(
@@ -22,7 +39,7 @@ export default function Dashboard() {
       return <div className="text-gray-400">No data available</div>;
     }
 
-    const filteredPositions = positions.filter((pos) => pos[type] > 0);
+    const filteredPositions = positions.filter((pos: UserPosition) => pos[type] > 0);
 
     if (filteredPositions.length === 0) {
       return <div className="text-gray-400">No {type} positions</div>;
@@ -31,7 +48,7 @@ export default function Dashboard() {
     return (
       <div className="space-y-1">
         <div className="font-medium text-gray-300">Breakdown:</div>
-        {filteredPositions.map((position) => (
+        {filteredPositions.map((position: UserPosition) => (
           <div key={position.asset} className="flex justify-between text-xs">
             <span className="text-gray-400">{position.symbol}:</span>
             <span className="text-white">{formatCurrency(position[type])}</span>
@@ -48,7 +65,7 @@ export default function Dashboard() {
     }
 
     const availableByAsset = userPositions
-      .map((position) => {
+      .map((position: UserPosition) => {
         const walletBalanceForAsset = 0; // TODO: Get actual wallet balance for this asset
         const available = Math.max(
           0,
@@ -63,7 +80,7 @@ export default function Dashboard() {
           borrowed: position.borrowed,
         };
       })
-      .filter((asset) => asset.available > 0);
+      .filter((asset: { available: number }) => asset.available > 0);
 
     if (availableByAsset.length === 0) {
       return <div className="text-gray-400">No available balance</div>;
@@ -72,7 +89,7 @@ export default function Dashboard() {
     return (
       <div className="space-y-1">
         <div className="font-medium text-gray-300">Breakdown:</div>
-        {availableByAsset.map((asset) => (
+        {availableByAsset.map((asset: { symbol: string; available: number; walletBalance: number }) => (
           <div key={asset.symbol} className="flex justify-between text-xs">
             <span className="text-gray-400">{asset.symbol}:</span>
             <span className="text-white">
@@ -80,7 +97,7 @@ export default function Dashboard() {
             </span>
           </div>
         ))}
-        {availableByAsset.some((asset) => asset.walletBalance > 0) && (
+        {availableByAsset.some((asset: { walletBalance: number }) => asset.walletBalance > 0) && (
           <div className="text-xs text-gray-500 mt-1 pt-1 border-t border-gray-700">
             Includes wallet balance
           </div>
@@ -100,7 +117,7 @@ export default function Dashboard() {
       poolLoanCounts[poolType] = 0;
     });
 
-    userPositions.forEach((position) => {
+    userPositions.forEach((position: UserPosition) => {
       if (position.borrowed > 0) {
         const poolType = getPoolTypeForAsset(position.symbol);
         if (poolType) {
@@ -164,25 +181,31 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           title={t('dashboard.totalSupplied')}
-          value="$456,289"
+          value={formatCurrency(totalSupplied)}
           change="+1.8%"
           changeType="positive"
+          icon={<TrendingUp className="w-4 h-4" />}
+          loading={cardsLoading.totalSupplied}
         />
         <StatCard
           title={t('dashboard.totalBorrowed')}
-          value="$125,750"
+          value={formatCurrency(totalBorrowed)}
           change="+0.5%"
           changeType="positive"
+          icon={<TrendingDown className="w-4 h-4" />}
+          loading={cardsLoading.totalBorrowed}
         />
         <StatCard
           title={t('dashboard.availableBalance')}
           value="$330,539"
-          icon="fas fa-sack-dollar"
+          icon={<Wallet className="w-4 h-4" />}
+          loading={cardsLoading.availableBalance}
         />
         <StatCard
           title={t('dashboard.activeLoans')}
-          value="3"
-          icon="fas fa-file-contract"
+          value={activeLoans.toString()}
+          icon={<FileText className="w-4 h-4" />}
+          loading={cardsLoading.activeLoans}
         />
       </div>
 
@@ -215,89 +238,67 @@ export default function Dashboard() {
             <tbody>
               {userPositions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-gray-500">
-                    <div className="flex flex-col items-center">
-                      <i className="fas fa-wallet text-3xl mb-3 text-gray-300"></i>
-                      <p className="text-lg font-medium mb-2">
-                        No positions yet
-                      </p>
-                      <p className="text-sm">
-                        Start by supplying assets or taking out loans
-                      </p>
-                    </div>
-                    <div>
-                      <div className="font-medium">USDC</div>
-                      <div className="text-xs text-gray-400">{t('dashboard.usdCoin')}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="font-medium">120,000</div>
-                  <div className="text-xs text-gray-400">$120,000</div>
-                </td>
-                <td>
-                  <div className="text-success font-medium">3.2%</div>
-                </td>
-                <td>
-                  <div className="text-xs">-</div>
-                </td>
-                <td>
-                  <div className="bg-green-900 bg-opacity-20 text-green-400 text-xs inline-block px-2 py-1 rounded">
-                    {t('dashboard.active')}
-                  </div>
-                </td>
-                <td>
-                  <button
-                    className="btn-secondary text-xs px-2 py-1"
-                    onClick={handleManagePosition}
-                  >
-                    {t('common.manage')}
-                  </button>
-                </td>
-              </tr>
-              {/* XLM Position */}
-              <tr>
-                <td>
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 overflow-hidden">
-                      <img
-                        src="/img/tokens/xlm.png"
-                        alt="XLM"
-                        className="w-5 h-5 object-contain"
-                      />
-                    </div>
-                    <div>
-                      <div className="font-medium">XLM</div>
-                      <div className="text-xs text-gray-400">
-                        {t('dashboard.stellarLumens')}
+                  <td colSpan={6} className="p-0">
+                    <NoPositionsEmptyState
+                      onSupplyAssets={() => {
+                        router.push('/dashboard/marketplace');
+                      }}
+                      onBrowsePools={() => {
+                        router.push('/dashboard/marketplace');
+                      }}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                userPositions.map((position: UserPosition) => (
+                  <tr key={position.asset}>
+                    <td>
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 overflow-hidden">
+                          <img
+                            src={`/img/tokens/${position.symbol.toLowerCase()}.png`}
+                            alt={position.symbol}
+                            className="w-5 h-5 object-contain"
+                          />
+                        </div>
+                        <div>
+                          <div className="font-medium">{position.symbol}</div>
+                          <div className="text-xs text-gray-400">
+                            {position.symbol === 'USDC' ? t('dashboard.usdCoin') : 
+                             position.symbol === 'XLM' ? t('dashboard.stellarLumens') : 
+                             position.symbol}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="font-medium">550,000</div>
-                  <div className="text-xs text-gray-400">$330,000</div>
-                </td>
-                <td>
-                  <div className="text-success font-medium">2.8%</div>
-                </td>
-                <td>
-                  <div className="text-xs">Sí (75%)</div>
-                </td>
-                <td>
-                  <div className="bg-blue-900 bg-opacity-20 text-blue-400 text-xs inline-block px-2 py-1 rounded">
-                    {t('dashboard.collateralBadge')}
-                  </div>
-                </td>
-                <td>
-                  <button
-                    className="btn-secondary text-xs px-2 py-1"
-                    onClick={handleManagePosition}
-                  >
-                    {t('common.manage')}
-                  </button>
-                </td>
-              </tr>
+                    </td>
+                    <td>
+                      <div className="font-medium">{formatCurrency(position.usdValue)}</div>
+                      <div className="text-xs text-gray-400">{formatCurrency(position.supplied)}</div>
+                    </td>
+                    <td>
+                      <div className="text-success font-medium">{position.apy}%</div>
+                    </td>
+                    <td>
+                      <div className="text-xs">
+                        {position.collateral ? 'Sí (75%)' : '-'}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={`${position.borrowed > 0 ? 'bg-green-900 bg-opacity-20 text-green-400' : 'bg-blue-900 bg-opacity-20 text-blue-400'} text-xs inline-block px-2 py-1 rounded`}>
+                        {position.borrowed > 0 ? t('dashboard.active') : t('dashboard.collateralBadge')}
+                      </div>
+                    </td>
+                    <td>
+                      <button
+                        className="btn-secondary text-xs px-2 py-1"
+                        onClick={handleManagePosition}
+                      >
+                        {t('common.manage')}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
