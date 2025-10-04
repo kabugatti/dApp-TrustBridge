@@ -187,6 +187,9 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Main navigation"
           className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
           style={
             {
@@ -213,6 +216,8 @@ function Sidebar({
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
+      role="navigation"
+      aria-label="Main navigation"
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div

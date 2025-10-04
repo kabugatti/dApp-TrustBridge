@@ -1,6 +1,8 @@
 "use client";
 
 import ActivityItem from "./AtivityItem";
+import { NoActivityEmptyState } from "@/components/ui/empty-state";
+import { useRouter } from "next/navigation";
 
 const activityData = [
   {
@@ -47,33 +49,44 @@ const activityData = [
 ];
 
 export default function RecentActivityFeed() {
+  const router = useRouter();
+  const hasActivity = activityData.length > 0;
+
   return (
     <div className="card p-6 mb-8">
       <h2 className="text-lg font-medium mb-4 text-gray-800 dark:text-gray-100">
         Actividad Reciente
       </h2>
       <div className="h-72 overflow-y-auto pr-2 custom-scrollbar">
-        {" "}
-        {activityData.map((activity, index) => (
-          <ActivityItem
-            key={index}
-            type={
-              activity.type as
-                | "supplied"
-                | "borrowed"
-                | "repaid"
-                | "collateral"
-                | "trbt_updated"
-                | "backstop_claim"
-                | "frozen_pool"
-                | "loan_defaulted"
-            }
-            description={activity.description}
-            amount={activity.amount}
-            token={activity.token}
-            timestamp={activity.timestamp}
+        {hasActivity ? (
+          activityData.map((activity, index) => (
+            <ActivityItem
+              key={index}
+              type={
+                activity.type as
+                  | "supplied"
+                  | "borrowed"
+                  | "repaid"
+                  | "collateral"
+                  | "trbt_updated"
+                  | "backstop_claim"
+                  | "frozen_pool"
+                  | "loan_defaulted"
+              }
+              description={activity.description}
+              amount={activity.amount}
+              token={activity.token}
+              timestamp={activity.timestamp}
+            />
+          ))
+        ) : (
+          <NoActivityEmptyState
+            onStartTrading={() => {
+              router.push('/dashboard/marketplace');
+            }}
+            className="h-full"
           />
-        ))}
+        )}
       </div>
     </div>
   );

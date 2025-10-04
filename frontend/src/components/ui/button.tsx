@@ -40,6 +40,7 @@ function Button({
   variant,
   size,
   asChild = false,
+  disabled,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -50,6 +51,13 @@ function Button({
   return (
     <Comp
       data-slot="button"
+      onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+          e.preventDefault();
+          e.currentTarget.click();
+        }
+      }}
+      disabled={disabled}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
