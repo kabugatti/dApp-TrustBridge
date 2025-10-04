@@ -4,14 +4,17 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({ className, ...props }: React.ComponentProps<"table"> & { "aria-label"?: string }) {
   return (
     <div
       data-slot="table-container"
+      role="region"
+      aria-label={props["aria-label"] ?? "Data table"}
       className="relative w-full overflow-x-auto"
     >
       <table
         data-slot="table"
+        role="table"
         className={cn("w-full caption-bottom text-sm", className)}
         {...props}
       />
@@ -73,6 +76,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
         "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
+      scope="col"
       {...props}
     />
   );
@@ -86,6 +90,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
         "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
+      role="gridcell"
       {...props}
     />
   );
