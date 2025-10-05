@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useWallet } from "@/components/modules/auth/hooks/wallet.hook";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useUserContext } from "@/providers/user.provider";
 import { useTranslation } from "@/hooks/useTranslation";
 import { WalletManagementDialog } from "@/components/modules/wallet/ui/wallet-management-dialog";
@@ -77,6 +78,8 @@ export default function Header() {
 
           {/* Language Selector */}
           <LanguageSelector />
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Desktop Wallet Section */}
           <div className="hidden sm:flex items-center gap-3">

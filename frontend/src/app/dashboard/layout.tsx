@@ -26,9 +26,9 @@ export default function DashboardLayout({
   // Prevent hydration mismatch by not rendering until client-side
   if (!isClient) {
     return (
-      <div className="min-h-screen flex flex-col w-full bg-neutral-900">
+      <div className="min-h-screen flex flex-col w-full bg-primary">
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-white">Loading...</div>
+          <div className="text-primary">Loading...</div>
         </div>
       </div>
     );
@@ -41,7 +41,7 @@ export default function DashboardLayout({
   // }
 
   return (
-    <div className="min-h-screen flex flex-col w-full bg-neutral-900">
+    <div className="min-h-screen flex flex-col w-full bg-primary">
       <Header />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>

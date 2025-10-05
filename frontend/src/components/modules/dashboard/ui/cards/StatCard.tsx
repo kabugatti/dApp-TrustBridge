@@ -58,7 +58,7 @@ export default function StatCard({
                 {badge}
               </span>
             )}
-            <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
               {emojiIcon ? (
                 <span className="text-base">{emojiIcon}</span>
               ) : (
@@ -71,7 +71,7 @@ export default function StatCard({
         {/* Value and Change */}
         <div className="flex items-end justify-between mb-2">
           <div className="flex items-baseline space-x-3">
-            <span className="text-2xl font-bold text-white transition-all duration-300">
+            <span className="text-2xl font-bold text-primary transition-all duration-300">
               {formatValue(value)}
             </span>
             {change && changeType && formatChange(change, changeType)}
