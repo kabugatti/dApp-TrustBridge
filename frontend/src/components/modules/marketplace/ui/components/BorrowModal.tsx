@@ -334,7 +334,35 @@ export function BorrowModal({ isOpen, onClose, poolId }: BorrowModalProps) {
             </div>
           </div>
         </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+          <button
+            className="btn-secondary"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn-danger"
+            onClick={handleBorrow}
+            disabled={isBorrowDisabled}
+          >
+            {loading ? (
+              <>
+                <div className="loader mr-2"></div>
+                Processing...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-arrow-down mr-2"></i>
+                Borrow USDC
+              </>
+            )}
+          </button>
+        </div>
       </div>
-    </div>
+    </ResponsiveModal>
   );
 }
