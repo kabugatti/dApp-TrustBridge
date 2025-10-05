@@ -11,7 +11,7 @@ import {
 } from "@/config/contracts";
 import { signTransaction } from "@/components/modules/auth/helpers/stellar-wallet-kit.helper";
 import { toast } from "sonner";
-import { EnhancedForm } from "@/components/ui/form";
+import { EnhancedForm } from "@/components/ui/form/EnhancedForm";
 import { AmountField, SelectField } from "@/components/ui/form-field";
 import { X, Plus, Info, ArrowRight, Percent, TrendingUp } from "lucide-react";
 
@@ -328,13 +328,13 @@ export function ProvideLiquidityModal({
     const { asset, amount } = data;
     setSelectedAsset(asset);
     setDepositAmount(amount);
-    
+
     // Handle liquidity provision
-    await handleDeposit();
+    await handleProvideCapitalLiquidity();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onClose();
     }
   };
@@ -342,7 +342,7 @@ export function ProvideLiquidityModal({
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onKeyDown={handleKeyDown}
     >
@@ -362,7 +362,10 @@ export function ProvideLiquidityModal({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -379,40 +382,48 @@ export function ProvideLiquidityModal({
             name="asset"
             label="Select Asset"
             required
-            options={availableAssets.map(asset => ({
+            options={availableAssets.map((asset) => ({
               value: asset.symbol,
               label: asset.symbol,
-              description: `APY: ${asset.apy}% | Balance: ${balancesFormatted[asset.symbol] || '0'} ${asset.symbol}`,
-              icon: <span className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center text-white text-xs font-bold">{asset.symbol[0]}</span>
+              description: `APY: ${asset.apy}% | Balance: ${balancesFormatted[asset.symbol] || "0"} ${asset.symbol}`,
+              icon: (
+                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center text-white text-xs font-bold">
+                  {asset.symbol[0]}
+                </span>
+              ),
             }))}
             placeholder="Choose an asset to provide"
-            onValueChange={(value) => setSelectedAsset(value)}
           />
 
           <AmountField
             name="amount"
             label="Deposit Amount"
             asset={selectedAsset}
-            balance={balancesFormatted[selectedAsset] ? parseFloat(balancesFormatted[selectedAsset]) : undefined}
+            balance={
+              balancesFormatted[selectedAsset]
+                ? parseFloat(balancesFormatted[selectedAsset])
+                : undefined
+            }
             min={0.01}
             precision={6}
             showMaxButton
-            showQuickAmounts
-            quickAmounts={[25, 50, 75]}
+            showQuickButtons={[25, 50, 75]}
             required
             disabled={loading || loadingBalances}
             validation={{
               required: "Please enter an amount to deposit",
               custom: async (value: string) => {
                 const amount = parseFloat(value);
-                const balance = balancesFormatted[selectedAsset] ? parseFloat(balancesFormatted[selectedAsset]) : 0;
-                
+                const balance = balancesFormatted[selectedAsset]
+                  ? parseFloat(balancesFormatted[selectedAsset])
+                  : 0;
+
                 if (amount < 0.01) return "Minimum deposit amount is 0.01";
                 if (amount > balance) {
                   return `Insufficient ${selectedAsset} balance`;
                 }
                 return undefined;
-              }
+              },
             }}
           />
         </EnhancedForm>
@@ -428,7 +439,9 @@ export function ProvideLiquidityModal({
             {/* You Will Receive */}
             <div className="bg-neutral-800 border border-neutral-700 rounded-lg p-4 mb-3">
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-neutral-400">You will receive</span>
+                <span className="text-sm text-neutral-400">
+                  You will receive
+                </span>
                 <span className="text-xs text-blue-300 bg-blue-900/30 border border-blue-700 px-2 py-1 rounded">
                   b{selectedAsset} Tokens
                 </span>
@@ -455,7 +468,9 @@ export function ProvideLiquidityModal({
               <div className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
                 <div className="flex items-center gap-1 mb-1">
                   <TrendingUp className="text-blue-400 h-3 w-3" />
-                  <span className="text-xs text-neutral-400">New Health Factor</span>
+                  <span className="text-xs text-neutral-400">
+                    New Health Factor
+                  </span>
                 </div>
                 <div className="text-sm font-semibold text-blue-400">
                   {estimates.newHealthFactor.toFixed(2)}
@@ -470,163 +485,10 @@ export function ProvideLiquidityModal({
           <div className="flex items-start gap-2">
             <Info className="text-blue-400 h-4 w-4 mt-0.5 shrink-0" />
             <p>
-              <strong>About bTokens:</strong> These tokens automatically earn yield and represent your share of the pool. You can redeem them anytime for the underlying asset plus accrued interest.
+              <strong>About bTokens:</strong> These tokens automatically earn
+              yield and represent your share of the pool. You can redeem them
+              anytime for the underlying asset plus accrued interest.
             </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-                <span className="text-sm text-gray-400">Wallet Balance</span>
-              </div>
-              <div className="text-right">
-                <div className="text-white font-medium">
-                  {loadingBalances
-                    ? "Loading..."
-                    : `${balancesFormatted[selectedAsset] ?? "0"} ${selectedAsset}`}
-                </div>
-                <div className="text-xs text-gray-400">
-                  ~$
-                  {loadingBalances
-                    ? "..."
-                    : (
-                        Number(balancesFormatted[selectedAsset] ?? "0") *
-                        (selectedAsset === "USDC" ? 1 : 0.1)
-                      ).toLocaleString()}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Amount Input */}
-          <div>
-            <label className="form-label">Amount to Deposit</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={depositAmount}
-                onChange={handleAmountChange}
-                placeholder="0.00"
-                className="form-input text-right pr-16"
-              />
-              <button
-                type="button"
-                onClick={handleMaxClick}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-success hover:text-green-300"
-              >
-                MAX
-              </button>
-            </div>
-            {/* Preset Buttons */}
-            <div className="flex gap-2 mt-2">
-              {[25, 50, 75].map((percentage) => (
-                <button
-                  key={percentage}
-                  className="btn-secondary text-xs flex-1"
-                  onClick={() => handlePresetClick(percentage)}
-                >
-                  {percentage}%
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Transaction Preview */}
-          {hasEstimates && (
-            <div className="card p-4 border-t border-custom">
-              <div className="flex items-center gap-2 mb-3">
-                <i className="fas fa-arrow-up text-success"></i>
-                <span className="text-sm font-medium text-gray-300">
-                  Transaction Preview
-                </span>
-                {estimating && <div className="loader"></div>}
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">You will receive:</span>
-                  <span className="text-success font-medium">
-                    {estimates.bTokensEstimated.toFixed(4)} b{selectedAsset}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Supply APY:</span>
-                  <span className="text-success font-medium">
-                    {estimates.supplyAPY.toFixed(2)}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Estimated Gas Fee:</span>
-                  <span className="text-white">
-                    {estimates.gasFee.toFixed(4)} XLM
-                  </span>
-                </div>
-                <div className="border-t border-custom pt-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Pool Total After:</span>
-                    <span className="text-white">
-                      ${estimates.totalSupplyAfter.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Info Alert */}
-          <div className="p-3 rounded bg-blue-900 bg-opacity-20 border border-blue-700 text-blue-300">
-            <div className="flex items-start gap-2">
-              <i className="fas fa-info-circle mt-0.5 text-blue-400"></i>
-              <div className="text-sm">
-                <strong>bTokens</strong> represent your share of the pool. They
-                earn interest automatically and can be redeemed for the
-                underlying asset at any time.
-              </div>
-            </div>
-          </div>
-
-          {/* Error States */}
-          {depositAmount &&
-            Number(depositAmount) >
-              Number(balancesFormatted[selectedAsset] ?? "0") && (
-              <div className="p-3 rounded bg-red-900 bg-opacity-20 border border-red-700 text-red-300">
-                <div className="flex items-start gap-2">
-                  <i className="fas fa-exclamation-triangle mt-0.5 text-red-400"></i>
-                  <div className="text-sm">
-                    Insufficient balance. You have{" "}
-                    {balancesFormatted[selectedAsset] ?? "0"} {selectedAsset}{" "}
-                    available.
-                  </div>
-                </div>
-              </div>
-            )}
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-3">
-            <button
-              className="btn-secondary"
-              onClick={onClose}
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              className="btn-primary"
-              onClick={handleProvideCapitalLiquidity}
-              disabled={!isValidAmount || loading || !walletAddress}
-            >
-              {loading ? (
-                <>
-                  <div className="loader mr-2"></div>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-arrow-right mr-2"></i>
-                  Provide Liquidity
-                </>
-              )}
-            </button>
           </div>
         </div>
       </div>

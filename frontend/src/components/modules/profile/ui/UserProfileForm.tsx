@@ -12,7 +12,6 @@ import { AddressField } from "@/components/ui/form-field";
 import { SelectField } from "@/components/ui/form-field";
 import { validationRules } from "@/lib/validation";
 
-
 export default function Profile() {
   const { profile, loading, saving, saveProfile } = useUserContext();
   const { walletAddress } = useWalletContext();
@@ -88,26 +87,6 @@ export default function Profile() {
             />
           </div>
 
-        <div className="flex justify-center mt-8">
-          <button
-            type="submit"
-            className="btn-primary px-8 py-3 text-base"
-            disabled={saving}
-          >
-            {saving ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Saving...
-              </>
-            ) : (
-              <>
-                <i className="fas fa-save mr-2"></i>
-                Save Changes
-              </>
-            )}
-          </button>
-        </div>
-      </form>
           <SelectField
             name="country"
             label="Country"

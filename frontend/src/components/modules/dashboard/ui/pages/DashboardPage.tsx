@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import StatCard from "../cards/StatCard";
 import { useTranslation } from "@/hooks/useTranslation";

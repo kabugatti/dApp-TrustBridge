@@ -346,7 +346,7 @@ export function BorrowModal({ isOpen, onClose, poolId }: BorrowModalProps) {
           </button>
           <button
             className="btn-danger"
-            onClick={handleBorrow}
+            onClick={() => handleBorrow()}
             disabled={isBorrowDisabled}
           >
             {loading ? (

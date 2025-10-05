@@ -149,13 +149,14 @@ export const fetchHistoricalAPY = async (
     // TODO: Replace with actual API calls
     const apyData: { [symbol: string]: ChartDataPoint[] } = {};
 
+    const baseAPYMap = {
+      USDC: 4.5,
+      XLM: 6.8,
+      TBT: 12.5,
+    } as const;
+
     for (const symbol of assets) {
-      const baseAPY =
-        {
-          USDC: 4.5,
-          XLM: 6.8,
-          TBT: 12.5,
-        }[symbol as keyof typeof baseAPY] || 5.0;
+      const baseAPY = baseAPYMap[symbol as keyof typeof baseAPYMap] || 5.0;
 
       apyData[symbol] = generateMockChartData(timeRange, baseAPY, 0.1);
     }
