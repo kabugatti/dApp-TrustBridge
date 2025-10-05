@@ -363,6 +363,6 @@ export function BorrowModal({ isOpen, onClose, poolId }: BorrowModalProps) {
           </button>
         </div>
       </div>
-    </ResponsiveModal>
+    </div>
   );
 }

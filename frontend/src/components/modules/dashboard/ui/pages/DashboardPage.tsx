@@ -5,25 +5,33 @@ import StatCard from "../cards/StatCard";
 import { useTranslation } from "@/hooks/useTranslation";
 import { NoPositionsEmptyState } from "@/components/ui/empty-state";
 import { useRouter } from "next/navigation";
-import { formatCurrency, UserPosition, POOL_CONFIG, getPoolTypeForAsset } from "@/helpers/user-positions.helper";
+import {
+  formatCurrency,
+  UserPosition,
+  POOL_CONFIG,
+  getPoolTypeForAsset,
+} from "@/helpers/user-positions.helper";
 import { useDashboard } from "../../hooks/useDashboard.hook";
 import { TrendingUp, TrendingDown, Wallet, FileText } from "lucide-react";
+
+// Import comprehensive analytics dashboard
+import { ComprehensiveAnalyticsDashboard } from "../charts/ComprehensiveAnalyticsDashboard";
 
 export default function Dashboard() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { 
-    userPositions, 
-    address, 
-    profile, 
-    walletName, 
-    totalSupplied, 
-    totalBorrowed, 
-    availableBalance, 
+  const {
+    userPositions,
+    address,
+    profile,
+    walletName,
+    totalSupplied,
+    totalBorrowed,
+    availableBalance,
     activeLoans,
-    cardsLoading 
+    cardsLoading,
   } = useDashboard();
-  
+
   const handleManagePosition = () => {
     alert(
       "Position management functionality will be implemented in the full version.",
@@ -39,7 +47,9 @@ export default function Dashboard() {
       return <div className="text-gray-400">No data available</div>;
     }
 
-    const filteredPositions = positions.filter((pos: UserPosition) => pos[type] > 0);
+    const filteredPositions = positions.filter(
+      (pos: UserPosition) => pos[type] > 0,
+    );
 
     if (filteredPositions.length === 0) {
       return <div className="text-gray-400">No {type} positions</div>;
@@ -89,15 +99,23 @@ export default function Dashboard() {
     return (
       <div className="space-y-1">
         <div className="font-medium text-gray-300">Breakdown:</div>
-        {availableByAsset.map((asset: { symbol: string; available: number; walletBalance: number }) => (
-          <div key={asset.symbol} className="flex justify-between text-xs">
-            <span className="text-gray-400">{asset.symbol}:</span>
-            <span className="text-white">
-              {formatCurrency(asset.available)}
-            </span>
-          </div>
-        ))}
-        {availableByAsset.some((asset: { walletBalance: number }) => asset.walletBalance > 0) && (
+        {availableByAsset.map(
+          (asset: {
+            symbol: string;
+            available: number;
+            walletBalance: number;
+          }) => (
+            <div key={asset.symbol} className="flex justify-between text-xs">
+              <span className="text-gray-400">{asset.symbol}:</span>
+              <span className="text-white">
+                {formatCurrency(asset.available)}
+              </span>
+            </div>
+          ),
+        )}
+        {availableByAsset.some(
+          (asset: { walletBalance: number }) => asset.walletBalance > 0,
+        ) && (
           <div className="text-xs text-gray-500 mt-1 pt-1 border-t border-gray-700">
             Includes wallet balance
           </div>
@@ -152,18 +170,18 @@ export default function Dashboard() {
 
   const getWalletDisplayName = () => {
     if (!address) return "Usuario";
-    
+
     // Use profile name if available
     if (profile && (profile.firstName || profile.lastName)) {
       const profileName = `${profile.firstName} ${profile.lastName}`.trim();
       if (profileName) return profileName;
     }
-    
+
     // 2: Use walletName if it's not "Freighter"
     if (walletName && walletName !== "Freighter") {
       return walletName;
     }
-    
+
     // Fallback: Use truncated address
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
@@ -171,16 +189,14 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto px-4 md:px-6 pt-24 pb-16 max-w-6xl">
       <h1 className="text-3xl font-bold mb-2">
-        {t('dashboard.title', { address: 'GABU...HE3JH' })}
+        {t("dashboard.title", { address: "GABU...HE3JH" })}
       </h1>
-      <p className="text-gray-400 mb-6">
-        {t('dashboard.subtitle')}
-      </p>
+      <p className="text-gray-400 mb-6">{t("dashboard.subtitle")}</p>
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
-          title={t('dashboard.totalSupplied')}
+          title={t("dashboard.totalSupplied")}
           value={formatCurrency(totalSupplied)}
           change="+1.8%"
           changeType="positive"
@@ -188,7 +204,7 @@ export default function Dashboard() {
           loading={cardsLoading.totalSupplied}
         />
         <StatCard
-          title={t('dashboard.totalBorrowed')}
+          title={t("dashboard.totalBorrowed")}
           value={formatCurrency(totalBorrowed)}
           change="+0.5%"
           changeType="positive"
@@ -196,43 +212,39 @@ export default function Dashboard() {
           loading={cardsLoading.totalBorrowed}
         />
         <StatCard
-          title={t('dashboard.availableBalance')}
+          title={t("dashboard.availableBalance")}
           value="$330,539"
           icon={<Wallet className="w-4 h-4" />}
           loading={cardsLoading.availableBalance}
         />
         <StatCard
-          title={t('dashboard.activeLoans')}
+          title={t("dashboard.activeLoans")}
           value={activeLoans.toString()}
           icon={<FileText className="w-4 h-4" />}
           loading={cardsLoading.activeLoans}
         />
       </div>
 
-      {/* Activity Chart */}
-      <div className="card p-6 mb-8" style={{ height: "300px" }}>
-        <h2 className="text-lg font-medium mb-4">{t('dashboard.recentActivity')}</h2>
-        <div className="flex items-center justify-center h-5/6 text-gray-400">
-          <div className="text-center">
-            <i className="fas fa-chart-line text-4xl mb-3"></i>
-            <p>{t('dashboard.activityChartLoading')}</p>
-          </div>
-        </div>
+      {/* Pool Analytics Section */}
+      <div className="mb-8">
+        <ComprehensiveAnalyticsDashboard />
       </div>
 
       {/* Current Positions Table */}
       <div className="card p-6 mb-8">
-        <h2 className="text-lg font-medium mb-4">{t('dashboard.currentPositions')}</h2>
+        <h2 className="text-lg font-medium mb-4">
+          {t("dashboard.currentPositions")}
+        </h2>
         <div className="overflow-x-auto">
           <table className="custom-table">
             <thead>
               <tr>
-                <th>{t('dashboard.asset')}</th>
-                <th>{t('dashboard.quantity')}</th>
-                <th>{t('dashboard.apy')}</th>
-                <th>{t('dashboard.collateral')}</th>
-                <th>{t('dashboard.status')}</th>
-                <th>{t('dashboard.action')}</th>
+                <th>{t("dashboard.asset")}</th>
+                <th>{t("dashboard.quantity")}</th>
+                <th>{t("dashboard.apy")}</th>
+                <th>{t("dashboard.collateral")}</th>
+                <th>{t("dashboard.status")}</th>
+                <th>{t("dashboard.action")}</th>
               </tr>
             </thead>
             <tbody>
@@ -241,10 +253,10 @@ export default function Dashboard() {
                   <td colSpan={6} className="p-0">
                     <NoPositionsEmptyState
                       onSupplyAssets={() => {
-                        router.push('/dashboard/marketplace');
+                        router.push("/dashboard/marketplace");
                       }}
                       onBrowsePools={() => {
-                        router.push('/dashboard/marketplace');
+                        router.push("/dashboard/marketplace");
                       }}
                     />
                   </td>
@@ -264,28 +276,40 @@ export default function Dashboard() {
                         <div>
                           <div className="font-medium">{position.symbol}</div>
                           <div className="text-xs text-gray-400">
-                            {position.symbol === 'USDC' ? t('dashboard.usdCoin') : 
-                             position.symbol === 'XLM' ? t('dashboard.stellarLumens') : 
-                             position.symbol}
+                            {position.symbol === "USDC"
+                              ? t("dashboard.usdCoin")
+                              : position.symbol === "XLM"
+                                ? t("dashboard.stellarLumens")
+                                : position.symbol}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <div className="font-medium">{formatCurrency(position.usdValue)}</div>
-                      <div className="text-xs text-gray-400">{formatCurrency(position.supplied)}</div>
-                    </td>
-                    <td>
-                      <div className="text-success font-medium">{position.apy}%</div>
-                    </td>
-                    <td>
-                      <div className="text-xs">
-                        {position.collateral ? 'Sí (75%)' : '-'}
+                      <div className="font-medium">
+                        {formatCurrency(position.usdValue)}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {formatCurrency(position.supplied)}
                       </div>
                     </td>
                     <td>
-                      <div className={`${position.borrowed > 0 ? 'bg-green-900 bg-opacity-20 text-green-400' : 'bg-blue-900 bg-opacity-20 text-blue-400'} text-xs inline-block px-2 py-1 rounded`}>
-                        {position.borrowed > 0 ? t('dashboard.active') : t('dashboard.collateralBadge')}
+                      <div className="text-success font-medium">
+                        {position.apy}%
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-xs">
+                        {position.collateral ? "Sí (75%)" : "-"}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        className={`${position.borrowed > 0 ? "bg-green-900 bg-opacity-20 text-green-400" : "bg-blue-900 bg-opacity-20 text-blue-400"} text-xs inline-block px-2 py-1 rounded`}
+                      >
+                        {position.borrowed > 0
+                          ? t("dashboard.active")
+                          : t("dashboard.collateralBadge")}
                       </div>
                     </td>
                     <td>
@@ -293,7 +317,7 @@ export default function Dashboard() {
                         className="btn-secondary text-xs px-2 py-1"
                         onClick={handleManagePosition}
                       >
-                        {t('common.manage')}
+                        {t("common.manage")}
                       </button>
                     </td>
                   </tr>
